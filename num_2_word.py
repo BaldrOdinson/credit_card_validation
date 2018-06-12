@@ -43,3 +43,6 @@ def num_name(number):
             final_number_name = number_name + dec_name[dec] + final_number_name
         dec +=1
     print('{0:,}'.format(number).replace(',', '`') + f' = {final_number_name}')
+    
+if __name__ == '__main__':
+    num_name(458621003562365821458852556594667455689517)
