@@ -15,11 +15,8 @@ def credit_card_validation(card_number):
                 sequence.append(pre_sum)
         else:
             sequence.append(number[1])
-#        print(number)
         if number[0] == last:
             last_num = number[1]
-#    print(f'Check digit is {last_num}')
-#    print(sequence)
     seq_sum = 0
     for num in sequence[:-1]:
         seq_sum += int(num)   # Складываем без последней цифры, на случай если она удвоилась
