@@ -93,3 +93,8 @@ def dijkstra(graph, start_node):
                 break
         if left_node_list == []:
             return node_weight_dict
+        
+if __name__ == '__main__':
+    graph = {1:[(2, 10)], 2:[(1, 10), (3, 10), (4, 10), (5, 10), (6, 10)], 3:[(2, 10), (7, 10), (8, 10),], 4:[], 5:[(2, 10), (9, 10), (10, 10), (11, 10)], 6:[], 7:[], 8:[(3, 10)], 9:[], 10:[(5, 10)], 11:[]}
+    start_point = 1
+    print(f'Available path from node {start_point}\n(node:weight): {dijkstra(graph, start_point)}')
