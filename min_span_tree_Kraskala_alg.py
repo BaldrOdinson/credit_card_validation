@@ -9,8 +9,8 @@ def find_cycle_in_graph(min_span_tree):
     for (a, b) in base_graph:
         base_graph_nodes.append(a)
         base_graph_nodes.append(b)
-    #print(f'___BEGIN___\nbase_graph: {base_graph}\nbase_graph_nodes: {base_graph_nodes}\n\
-#set(base_graph_nodes): {set(base_graph_nodes)}')
+    # print(f'___BEGIN___\nbase_graph: {base_graph}\nbase_graph_nodes: {base_graph_nodes}\n\
+    # set(base_graph_nodes): {set(base_graph_nodes)}')
     # delete hanging nodes
     for node in set(base_graph_nodes):
         if base_graph == []:
@@ -19,8 +19,8 @@ def find_cycle_in_graph(min_span_tree):
             for (a, b) in base_graph:
                 if a == node or b == node:
                     span_4_del = (a, b)
-                    #print(f'__HANGING NODE__\nspan_4_del: {span_4_del}')
-            #print(f'__BEFORE DELETE HANGING NODE__\nbase_graph: {base_graph}\nspan_4_del: {span_4_del}')
+                    # print(f'__HANGING NODE__\nspan_4_del: {span_4_del}')
+            # print(f'__BEFORE DELETE HANGING NODE__\nbase_graph: {base_graph}\nspan_4_del: {span_4_del}')
             base_graph.remove(span_4_del)
             base_graph_nodes.remove(span_4_del[0])
             base_graph_nodes.remove(span_4_del[1])
@@ -35,7 +35,7 @@ def find_cycle_in_graph(min_span_tree):
                 result = 'non cycled graph'
             break
         (from_, to_) = base_graph[0]
-        #print(f'__IN WHILE__\n(from_, to_): {from_, to_}')
+        # print(f'__IN WHILE__\n(from_, to_): {from_, to_}')
         if len(path_list) == 0:
             path_list.append(from_)
             path_list.append(to_)
@@ -60,13 +60,14 @@ def find_cycle_in_graph(min_span_tree):
         if path_list.count(from_) > 1 or path_list.count(to_) > 1:
             result = 'cycled graph'
             break
-        #print(f'__PATH LIST__\npath_list: {path_list}\nbase_graph: {base_graph}')
-        
-    #print(f'___FINAL___\nbase_graph: {base_graph}\nbase_graph_nodes: {base_graph_nodes}\n\
-#set base_graph_nodes: {set(base_graph_nodes)}\nresult: {result}')
+        # print(f'__PATH LIST__\npath_list: {path_list}\nbase_graph: {base_graph}')
+
+    # print(f'___FINAL___\nbase_graph: {base_graph}\nbase_graph_nodes: {base_graph_nodes}\n\
+    # set base_graph_nodes: {set(base_graph_nodes)}\nresult: {result}')
     return result
-    
-def find_min_weight(edges_weight, min_weight = -1):
+
+
+def find_min_weight(edges_weight, min_weight=-1):
     for spin, weight in edges_weight.items():
         if min_weight == -1:
             min_weight = weight
@@ -74,13 +75,15 @@ def find_min_weight(edges_weight, min_weight = -1):
             min_weight = min(min_weight, weight)
     return min_weight
 
-def find_max_weight(edges_weight, max_weight = -1):
+
+def find_max_weight(edges_weight, max_weight=-1):
     for spin, weight in edges_weight.items():
         if max_weight == -1:
             max_weight = weight
         else:
             max_weight = max(max_weight, weight)
     return max_weight
+
 
 def del_double(edges_weight):
     '''
@@ -97,6 +100,7 @@ def del_double(edges_weight):
     edges_weight = temp_edges_weight
     return edges_weight
 
+
 def spin_weight_dict(graph):
     '''
     формируем словарь edges_weight с ребрами и весом
@@ -107,17 +111,32 @@ def spin_weight_dict(graph):
             edges_weight[(nodes[0], spin[0])] = spin[1]
     return edges_weight
 
+
+def weight_list(graph):
+    '''
+    Формируем список с существуюшими весами ребер
+    '''
+    weights_list = []
+    for node in graph.items():
+        for edge in node[1]:
+            if edge[1] not in weights_list:
+                weights_list.append(edge[1])
+    return weights_list
+
+
 def min_span_tree_Kraskala(graph):
     # формируем словарь с ребрами и весом
     min_span_tree = {}
     preorder_spins = {}
+    weights = weight_list(graph)
     edges_weight = spin_weight_dict(graph)
     # Удаляем дубликаты
     edges_weight = del_double(edges_weight)
-    #print(f'edges_weight: {edges_weight}')
+    # print(f'edges_weight: {edges_weight}')
     # Ищем ребра минимального веса, ну и максимального
     max_weight = find_max_weight(edges_weight)
-    min_weight = find_min_weight(edges_weight, min_weight = -1)
+    min_weight = find_min_weight(edges_weight, min_weight=-1)
+    weights.remove(min_weight)
     while min_weight <= max_weight:
         # Отбираем ребра минимального веса
         for spin, weight in edges_weight.items():
@@ -133,14 +152,18 @@ def min_span_tree_Kraskala(graph):
                 for key_in, weight in min_span_tree.items():
                     if min_span_tree[key_in] != min_span_tree[key]:
                         curr_min_span_tree[key_in] = min_span_tree[key_in]
-            #print(f'__IN KRASKALA WHILE__\ncurr_min_span_tree: {curr_min_span_tree}')
+            # print(f'__IN KRASKALA WHILE__\ncurr_min_span_tree: {curr_min_span_tree}')
             check_result = find_cycle_in_graph(curr_min_span_tree)
             if check_result == 'cycled graph':
                 min_span_tree.pop(spin)
         # Выбираем следующий минимальный вес
-        min_weight += 1
-    #print(f'___BOTTOM___\nedges_weight: {edges_weight}\nmin weight: {min_weight}, max weight: {max_weight}\npreorder_spins: {preorder_spins}\n\
-#min_span_tree: {min_span_tree}\n{min_span_tree.keys()}\ncheck result: {check_result}')
+        if min_weight < max_weight:
+            min_weight = min(weights)
+            weights.remove(min_weight)
+        else:
+            break
+    # print(f'___BOTTOM___\nedges_weight: {edges_weight}\nmin weight: {min_weight}, max weight: {max_weight}\npreorder_spins: {preorder_spins}\n\
+    # min_span_tree: {min_span_tree}\n{min_span_tree.keys()}\ncheck result: {check_result}')
     return min_span_tree
     
 if __name__ == '__main__':
